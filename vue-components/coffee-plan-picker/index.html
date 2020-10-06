@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue.js Components Fundamentals</title>
+</head>
+
+<body>
+  <div id="app" class="container mx-auto py-6">
+    <div class="content">
+      <h1 class="title">Coffee Plans</h1>
+
+      <h2 class="subtitle">
+        We travel the world to source the very best single origin coffee for you
+      </h2>
+      <!-- 
+      IF NOT PASSING ARRAY OF PLAN NAMES IN PARENT DATA PROPERTY
+      FOR DYNAMICALLY PASSING SAID DATA (PLAN NAMES)
+        <div class="plans">
+          <plan name="The Single"></plan>
+          <plan name="The Curious"></plan>
+          <plan name="The Addict"></plan>
+          <plan name="The Hacker"></plan>
+        </div> 
+      --> 
+      <plan-picker></plan-picker>
+    </div>
+  </div>
+
+  <!-- x-template syntax for component templates -->
+  <script type="text/x-template" id="plan-picker-item-template">
+    <div class="plans">                   <!-- custom event function w/ v-on shorthand -->
+      <plan-picker-item v-for="plan in plans" :name="plan" @select="selectPlan" :selected-plan="selectedPlan"></plan-picker-item>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="plan-picker-template">
+    <div @click="select" class="plan" :class="{'active-plan': isSelected}">
+        <div class="description">
+          <span class="title">
+            {{name}}
+          </span>
+        </div>
+      </div>
+  </script>
+
+  <script src="https://unpkg.com/vue"></script>
+  <script src="./app.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</body>
+
+</html> 

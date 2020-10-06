@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Vue.js Fundies--Shopping List App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="shopping-list" class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="header">
+            <h1>{{ header.toLocaleUpperCase() }}</h1>
+            <button
+              v-if="state === 'default'"
+              @click="changeState('edit')"
+              class="btn btn-secondary"
+            >Add Items</button>
+            <button
+              v-else
+              @click="changeState('default')"
+              class="btn btn-danger"
+            >Cancel</button>
+          </div>
+          <div v-if="state === 'edit'" class="add-item-form">
+            <input
+              v-model="newItem"
+              @keyup.enter="saveItem"
+              type="text"
+              placeholder="Add an item"
+            />
+            <p>{{ characterCount }} / 200 max.</p>
+            <button 
+              :disabled="newItem.length === 0"
+              @click="saveItem"
+              class="btn btn-primary"
+            >Save Item</button>
+          </div>
+          <!-- 
+            just an example for demonstration of responsivity
+            to test for yourself: 
+            0. uncomment <a> tag and save
+            1. reload file in browser
+            2. fill input with complete URL ("https://www.reddit.com")
+              2.a. DO NOT hit 'enter' or click 'Save Item button'
+            3. click <a> tag to open link in new tab
+            <a :href="newItem" :disabled="newItem.length === 0" target="_blank">Dynamic Link!!!</a>
+          -->
+          <ul>
+            <li
+              v-for="item in byNewestList"
+              :class="{stricken: item.purchased, priority: item.highPriority}"
+              @click="togglePurchased(item)"
+            >
+            <!-- 
+              :class="{stricken: item.purchased}"
+                ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
+              OBJECT SYNTAX FOR VUE CLASS BINDING
+                1. good for use cases w/ limited  logic
+                2. readable & intuitive
+            -->
+            <!-- 
+              :class="[item.purchased ? 'stricken' : ']'"
+                ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
+              ARRAY SYNTAX FOR VUE CLASS BINDING
+                1. verbose && can be difficult to understand
+                2. can handle complex conditional rendering
+                3. 
+            -->
+            {{ item.label }}</li>
+          </ul>
+          <p v-if="items.length === 0">Shopping Complete! Good Jaerb!</p>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue"></script>
+    <script>
+      var shoppingList = new Vue({
+        el: '#shopping-list',
+        data: {
+          state: 'default',
+          header: 'Shopping List App',
+          newItem: '',
+          items: [
+            {
+              label: '214 apples',
+              purchased: false,
+              highPriority: false
+            },
+            {
+              label: '431 oranges',
+              purchased: true,
+              highPriority: false
+            },
+            {
+              label: '14 strawberries',
+              purchased: false,
+              highPriority: true
+            }
+          ]
+        },
+        // use `computed` propertites to alter only PRESENTATION OF DATA w/o direct manipulation
+        computed: {
+          characterCount: function() {
+            return this.newItem.length;
+          },
+          byNewestList: function() {
+            return this.items.slice(0).reverse();
+          }
+        },
+        // use `methods` for cases in which DATA IS CHANGED DIRECTLY
+        methods: {
+          saveItem: function() {
+            this.items.push({
+              label: this.newItem,
+              purchased: false
+            });
+          },
+          changeState: function(newState) {
+            this.state = newState;
+            this.newItem = '';
+          },
+          togglePurchased: function(item) {
+            if (item.highPriority) {
+              item.highPriority = false
+            }
+            item.purchased = !item.purchased
+          }
+        }
+       
+      });
+    </script>
+    <style>
+      .stricken {
+        text-decoration: line-through;
+        font-style: italic;
+        color: gray;
+      }
+
+      .priority {
+        color: rgb(20, 10, 106);
+        background: rgb(25, 237, 194);
+        padding: 2px; 
+        width: fit-content;
+      }
+    </style>
+  </body>
+</html>
